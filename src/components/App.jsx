@@ -1,16 +1,14 @@
+import ContactsBook from "./contactsbook/Contactsbook";
+
 export const App = () => {
   return (
     <div
       style={{
         height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 40,
-        color: '#010101'
-      }}
-    >
-      React homework template
+        padding: '20px',
+        backgroundColor: '#303235',
+      }}>
+      <ContactsBook/>
     </div>
   );
 };

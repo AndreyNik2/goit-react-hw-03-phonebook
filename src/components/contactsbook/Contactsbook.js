@@ -11,14 +11,22 @@ import Filter from './Filter';
 
 class ContactsBook extends React.Component {
   state = {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
+    contacts: [],
     filter: '',
   };
+
+  componentDidMount() {
+    const parceContacts = JSON.parse(localStorage.getItem('contacts'));
+    if (parceContacts) {
+      this.setState({ contacts: parceContacts });
+    }
+  }
+
+  componentDidUpdate(_, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
 
   handleSubmit = evt => {
     evt.preventDefault();
@@ -29,9 +37,12 @@ class ContactsBook extends React.Component {
   };
 
   formSubmitHandler = data => {
-    if (this.state.contacts.filter(contact => contact.name === data.name).length > 0 ) {
-    alert(`${data.name}  is already in contacts`)
-      return
+    if (
+      this.state.contacts.filter(contact => contact.name === data.name).length >
+      0
+    ) {
+      alert(`${data.name}  is already in contacts`);
+      return;
     }
     data.id = nanoid();
     this.setState(prevState => ({ contacts: [...prevState.contacts, data] }));
@@ -42,8 +53,10 @@ class ContactsBook extends React.Component {
   };
 
   deleteContacts = contactId => {
-    this.setState(prevState => ({ contacts: prevState.contacts.filter(contact => contact.id !== contactId) }))
-  }
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(contact => contact.id !== contactId),
+    }));
+  };
 
   render() {
     const normalizedFilter = this.state.filter.toLowerCase();
@@ -56,8 +69,13 @@ class ContactsBook extends React.Component {
         <Form onSubmit={this.formSubmitHandler} />
         <TitleContacts>Contacts</TitleContacts>
         <Filter value={this.state.filter} onChange={this.onChangeFilter} />
-        <ContactList contacts={filteredContacts} onDeleteContact={this.deleteContacts} />
-        {this.state.contacts.length === 0 && <p>Contactlist empty. Please add contact.</p>}
+        <ContactList
+          contacts={filteredContacts}
+          onDeleteContact={this.deleteContacts}
+        />
+        {this.state.contacts.length === 0 && (
+          <p>Contactlist empty. Please add contact.</p>
+        )}
       </BoxPhonebook>
     );
   }
